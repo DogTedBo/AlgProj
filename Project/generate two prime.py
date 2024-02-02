@@ -1,4 +1,5 @@
 import random
+import math
 
 def rabin_miller(num):
     s = num - 1
