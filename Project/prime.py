@@ -91,6 +91,19 @@ d = x[0] % phi
 print('d',d)
 
 message='topSecret'            #------------------------according to the input ifo
-M=int(message)
-C=pow(M,e,n)
-M=pow(C,d,n)
+message = message.upper()
+
+for M in message:  
+    M = ord(M)
+    
+    print(M)
+    C=pow(M,e,n)
+    M=pow(C,d,n)
+    print(C)
+    print(M)
+
+S=pow(M,d,n)
+print(S)
+m=pow(S,e,n)
+print(m)
+
