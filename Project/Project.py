@@ -38,10 +38,10 @@ def main():
                 if user_choice == "1":
                     print("The following messages are available:")
                     print("1. (length = 9)")
-                    message_choice = input("Enter your choice: ")#No matter input which number here will print the decrypted message,maybe add else here to print invalid info
+                    Decrypted_message = input("Enter your choice: ")#No matter input which number here will print the decrypted message,maybe add else here to print invalid info
                     print("Decrypted message: TOPSECRET")#Should output according to the input
                 elif user_choice == "2":
-                    message = input("Enter a message: ")
+                    Signature = input("Enter a message: ")
                     print("Message signed and sent.")
                 elif user_choice == "3":
                     print("Public Key: <public_key>")#public key
