@@ -9,7 +9,7 @@ This is the main RSA logic that will be used for our project. It will be used to
 class RSA:
     def __init__(self, key_length=1024):
         self.public_key, self.private_key = self.rsa_keygen(key_length)
-        self.public_key, self.private_key = self.rsa_keygen(key_length)
+        self.public_sign_key, self.private_sign_key = self.rsa_keygen(key_length)
 
     def generate_prime_candidate(self, length):
         return random.getrandbits(length)
