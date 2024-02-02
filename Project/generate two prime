@@ -69,3 +69,7 @@ x = extended_gcd(e, phi)
 d = x[0] % phi
 print('d',d)
 
+message='topSecret'            #------------------------according to the input ifo
+M=int(message)
+C=pow(M,e,n)
+M=pow(C,d,n)
