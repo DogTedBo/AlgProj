@@ -1,4 +1,4 @@
-
+import sys
 def main():
     while True:
         print("Please select your user type:")
@@ -21,7 +21,7 @@ def main():
                 elif user_choice == "2":
                     print("There are no signatures to authenticate.")
                 elif user_choice == "3":
-                    break
+                    sys.exit()
                 else:
                     print("Invalid input. Please try again.")
        
@@ -49,13 +49,13 @@ def main():
                 elif user_choice == "4":
                     print("New set of keys generated.")#New key
                 elif user_choice == "5":
-                    break
+                    sys.exit()
                 else:
                     print("Invalid input. Please try again.")
        
         elif user_type == "3":
             print("Bye for now!")
-            break
+            sys.exit()
        
         else:
             print("Invalid input. Please try again.")
