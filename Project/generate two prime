@@ -45,5 +45,27 @@ def get_prime(key_size=1024):
 p=get_prime(15)
 q=get_prime(15)
 
-print(p)
-print(q)
+print('q',q)
+print('p',p)
+
+n=p*q
+phi=(p-1)*(q-1)
+
+print('n',n)
+print('phi',phi)
+
+e = random.randint(2, phi)
+while math.gcd(e, phi) != 1: 
+    e = random.randint(2, phi) 
+print('e',e)
+       
+def extended_gcd(a =1, b = 1): 
+    if b == 0: 
+        return (1, 0, a)  
+    (x, y, d) = extended_gcd(b, a%b)  
+    return y, x - a//b*y, d
+       
+x = extended_gcd(e, phi)
+d = x[0] % phi
+print('d',d)
+
