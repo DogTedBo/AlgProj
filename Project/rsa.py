@@ -86,31 +86,44 @@ class RSA:
             os.makedirs(type)
         filename = ''.join(random.choices('0123456789ABCDEF', k=16)) + ".txt"
         filepath = os.path.join(type, filename)
-        with open(filepath, "w") as file:
-            file.write(str(text))
+        
+        if os.path.exists(filepath):
+            print(f"File {filename} already exists. Please try again.")
+        else:
+            with open(filepath, "w") as file:
+                file.write(str(text))
 
     def getFiles(self, type="messages"):
-        dir = type
-        if not os.path.exists(dir):
-            print("No messages directory found.")
-            return []
-        files = os.listdir(dir)
-        messages = []
-        for filename in files:
-            filepath = os.path.join(dir, filename)
-            with open(filepath, "r") as file:
-                content = file.read().strip()
+        try: # This line is used to handle exceptions
+            dir = type
+            if not os.path.exists(dir):
+                print(f"No {type} directory found.")
+                return []
+
+            files = os.listdir(dir)
+            messages = []
+
+            for filename in files:
+                filepath = os.path.join(dir, filename)
+
                 try:
-                    # Attempt to safely evaluate the file content
-                    encrypted_message = ast.literal_eval(content)
-                    if isinstance(encrypted_message, list) and all(isinstance(n, int) for n in encrypted_message):
-                        decrypted_message = self.decrypt(encrypted_message)
-                        messages.append(decrypted_message)
-                    else:
-                        print(f"File {filename} contains invalid encrypted message format.")
-                except SyntaxError as e:
-                    print(f"Syntax error in file {filename}: {e}")
-        return messages
+                    with open(filepath, "r") as file:
+                        content = file.read().strip()
+                        encrypted_message = ast.literal_eval(content)
+
+                        if isinstance(encrypted_message, list) and all(isinstance(n, int) for n in encrypted_message):
+                            decrypted_message = self.decrypt(encrypted_message)
+                            messages.append(decrypted_message)
+                        else:
+                            print(f"File {filename} contains invalid encrypted message format.")
+                except (SyntaxError, ValueError) as e:
+                    print(f"Error reading file {filename}: {e}")
+
+            return messages
+
+        except Exception as e:
+            print(f"An unexpected error occurred while retrieving files: {e}")
+            return []
     
     def sign(self, message, key=None):
         if key is None:

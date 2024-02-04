@@ -1,31 +1,43 @@
 from rsa import RSA
 
+
 class RSAManager:   # This class is used to manage the RSA class
     def __init__(self):
         self.rsa_instance = RSA(1024)
 
     def public_user_menu(self): # This function is used to display the menu for the public user
-        while True:
+        while True: 
             print("\nAs a public user, what would you like to do?")
             print("1. Send an encrypted message")
             print("2. Authenticate a digital signature")
             print("3. Exit")
-            user_choice = input("Enter your choice: ")
-
-            if user_choice == "1": # This condition is used to send an encrypted message
-                self.send_encrypted_message() 
-            elif user_choice == "2": # This condition is used to authenticate a digital signature
-                self.authenticate_signature()
-            elif user_choice == "3":    # This condition is used to exit the program
-                break
-            else:
+            
+            try: # This line is used to handle the exception
+                user_choice = input("Enter your choice: ")
+                if user_choice == "1": # This condition is used to send an encrypted message
+                    self.send_encrypted_message() 
+                elif user_choice == "2": # This condition is used to authenticate a digital signature
+                    self.authenticate_signature()
+                elif user_choice == "3":    # This condition is used to exit the program
+                    break
+                else:
+                    print("Invalid input. Please try again.")
+            except ValueError:  
                 print("Invalid input. Please try again.")
+            except Exception as e:
+                print(f"Error: {e} occurred. Please try again.")
+            except ValueError as ve:
+                print(f"Error: {ve} occurred. Please try again.")
+
 
     def send_encrypted_message(self): # This function is used to send an encrypted message
-        message = input("Enter a message: ") # This line is used to take the input from the user
-        encrypted_msg = self.rsa_instance.encrypt(message) # This line is used to encrypt the message
-        self.rsa_instance.newFile(encrypted_msg) # This line is used to save the encrypted message to a file
-        print("Message encrypted and sent") # This line is used to print the message
+        try:
+            message = input("Enter a message: ") # This line is used to take the input from the user
+            encrypted_msg = self.rsa_instance.encrypt(message) # This line is used to encrypt the message
+            self.rsa_instance.newFile(encrypted_msg) # This line is used to save the encrypted message to a file
+            print("Message encrypted and sent") # This line is used to print the message
+        except Exception as e :
+            print(f"Error: {e} occurred while encrypting the message. Please try again.")
 
     def authenticate_signature(self): # This function is used to authenticate a digital signature
         signatures = self.rsa_instance.getFiles("signatures") # This line is used to get the signatures from the file
@@ -48,20 +60,28 @@ class RSAManager:   # This class is used to manage the RSA class
             print("3. Show the keys")
             print("4. Generate a new set of keys")
             print("5. Exit")
-            user_choice = input("Enter your choice: ")
 
-            if user_choice == "1":
-                self.decrypt_received_message() # This line is used to decrypt the received message
-            elif user_choice == "2":
-                self.sign_message() # This line is used to sign the message
-            elif user_choice == "3":
-                self.show_keys() # This line is used to show the keys    
-            elif user_choice == "4":
-                self.generate_new_keys() # This line is used to generate a new set of keys
-            elif user_choice == "5":
-                break
-            else:
+            try: # This line is used to handle the exception
+                user_choice = input("Enter your choice: ")
+                if user_choice == "1":
+                    self.decrypt_received_message() # This line is used to decrypt the received message
+                elif user_choice == "2":
+                    self.sign_message() # This line is used to sign the message
+                elif user_choice == "3":
+                    self.show_keys() # This line is used to show the keys    
+                elif user_choice == "4":
+                    self.generate_new_keys() # This line is used to generate a new set of keys
+                elif user_choice == "5":
+                    break
+                else:
+                    print("Invalid input. Please try again.")
+            except ValueError:
                 print("Invalid input. Please try again.")
+            except Exception as e:
+                print(f"Error: {e} occurred. Please try again.")
+            except ValueError as ve:
+                print(f"Error: {ve} occurred. Please try again.")
+
 
     def decrypt_received_message(self): # This function is used to decrypt the received message
         messages = self.rsa_instance.getFiles() # This line is used to get the messages from the file
