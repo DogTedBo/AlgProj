@@ -184,12 +184,13 @@ class RSA:
         signature = [pow(ord(char), key, n) for char in message]
         return signature
 
+
     def verify_signature(self, message, signature, key=None):
         if key is None:
             key = self.public_sign_key  # Use the public signing key for verification
         key, n = key
         decrypted_signature = [pow(char, key, n) for char in signature]
-        
-        # Convert decrypted signature back to string
-        original_message = ''.join([chr(dec_char) for dec_char in decrypted_signature])
+        original_message = ''.join(chr(dec_char) for dec_char in decrypted_signature)
         return original_message == message
+    
+   

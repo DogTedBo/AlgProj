@@ -1,4 +1,4 @@
-from RSA import RSA
+from rsa import RSA
 
 
 class RSAManager:   # This class is used to manage the RSA class
@@ -46,11 +46,22 @@ class RSAManager:   # This class is used to manage the RSA class
             print("No signatures available to authenticate.") # This line is used to print the message
             return # This line is used to return the control to the calling function
 
-        print("The following messages are available:") # This line is used to print the message
+        print("The following signatures are available:") # This line is used to print the message
         for i, signature in enumerate(signature_names, 1): # This line is used to iterate through the signatures
             print(f"{i}. {signature}") # This line is used to print the signature
 
-        message_number = int(input("Enter your choice: ")) # This line is used to take the input from the user
+        while True:
+            try:
+                signature_number = int(input("Enter the number of the signature to authenticate: ")) # This line is used to take the input from the user
+                if 1 <= signature_number <= len(signature_names):
+                    break
+                else:
+                    print("Invalid input. Please enter a valid signature number.")
+            except ValueError:
+                print("Invalid input. Please enter a valid signature number.")
+
+        selected_signature = signature_names[signature_number - 1]
+        print(f"Selected signature: {selected_signature}")
         print("Signature authenticated") # This line is used to print the message
 
     def owner_menu(self): # This function is used to display the menu for the owner of the keys
@@ -100,9 +111,9 @@ class RSAManager:   # This class is used to manage the RSA class
         print("Decrypted message:", messages[message_number - 1]) # This line is used to print the message
 
     def sign_message(self): # This function is used to sign the message
-        message = input("Enter a message to sign: ") # This line is used to take the input from the user
-        signature = self.rsa_instance.encrypt(message, self.rsa_instance.private_key) # This line is used to sign the message
-        self.rsa_instance.newSignatureFile(signature, message) # This line is used to save the signature to a file
+        message = input("Enter a message to sign: ") # Take input from the user
+        signature = self.rsa_instance.encrypt(message, self.rsa_instance.private_key) # Sign the message
+        self.rsa_instance.newSignatureFile(signature, message) # Save the signature to a file
         print("Message signed and sent")
 
     def show_keys(self): # This function is used to show the keys
