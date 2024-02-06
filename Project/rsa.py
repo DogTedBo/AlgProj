@@ -1,15 +1,46 @@
-import random
+import ast
 import os
-import ast 
+import random
 
-"""\
-This is the main RSA logic that will be used for our project. It will be used to generate the keys, encrypt and decrypt messages, and save the messages to files.
 
-"""
 class RSA:
     def __init__(self, key_length=1024):
-        self.public_key, self.private_key = self.rsa_keygen(key_length)
-        self.public_sign_key, self.private_sign_key = self.rsa_keygen(key_length)
+        # Check for existing keys and load them if they exist
+        if not self.load_keys():
+            self.public_key, self.private_key = self.rsa_keygen(key_length)
+            self.public_sign_key, self.private_sign_key = self.rsa_keygen(key_length)
+            # Save the newly generated keys
+            self.save_keys()
+
+    def load_keys(self):
+        keys_path = "keys"
+        try:
+            if os.path.exists(os.path.join(keys_path, "public_key.pem")) and os.path.exists(os.path.join(keys_path, "private_key.pem")) and os.path.exists(os.path.join(keys_path, "public_sign_key.pem")) and os.path.exists(os.path.join(keys_path, "private_sign_key.pem")):
+                with open(os.path.join(keys_path, "public_key.pem"), "r") as file:
+                    self.public_key = ast.literal_eval(file.read())
+                with open(os.path.join(keys_path, "private_key.pem"), "r") as file:
+                    self.private_key = ast.literal_eval(file.read())
+                with open(os.path.join(keys_path, "public_sign_key.pem"), "r") as file:
+                    self.public_sign_key = ast.literal_eval(file.read())
+                with open(os.path.join(keys_path, "private_sign_key.pem"), "r") as file:
+                    self.private_sign_key = ast.literal_eval(file.read())
+                return True
+        except Exception as e:
+            print(f"Error loading keys: {e}")
+        return False
+
+    def save_keys(self):
+        keys_path = "keys"
+        if not os.path.exists(keys_path):
+            os.makedirs(keys_path)
+        with open(os.path.join(keys_path, "public_key.pem"), "w") as file:
+            file.write(str(self.public_key))
+        with open(os.path.join(keys_path, "private_key.pem"), "w") as file:
+            file.write(str(self.private_key))
+        with open(os.path.join(keys_path, "public_sign_key.pem"), "w") as file:
+            file.write(str(self.public_sign_key))
+        with open(os.path.join(keys_path, "private_sign_key.pem"), "w") as file:
+            file.write(str(self.private_sign_key))
 
     def generate_prime_candidate(self, length):
         return random.getrandbits(length)
@@ -127,16 +158,17 @@ class RSA:
     
     def sign(self, message, key=None):
         if key is None:
-            key = self.private_key
+            key = self.private_sign_key  # Use the private signing key
         key, n = key
         signature = [pow(ord(char), key, n) for char in message]
         return signature
-    
+
     def verify_signature(self, message, signature, key=None):
         if key is None:
-            key = self.public_sign_key
+            key = self.public_sign_key  # Use the public signing key for verification
         key, n = key
         decrypted_signature = [pow(char, key, n) for char in signature]
+        
+        # Convert decrypted signature back to string
         original_message = ''.join([chr(dec_char) for dec_char in decrypted_signature])
         return original_message == message
-    

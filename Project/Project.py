@@ -1,9 +1,10 @@
-from rsa import RSA
+from RSA import RSA
 
 
 class RSAManager:   # This class is used to manage the RSA class
     def __init__(self):
-        self.rsa_instance = RSA(1024)
+        self.rsa_instance = RSA()
+        self.rsa_instance
 
     def public_user_menu(self): # This function is used to display the menu for the public user
         while True: 
@@ -70,7 +71,9 @@ class RSAManager:   # This class is used to manage the RSA class
                 elif user_choice == "3":
                     self.show_keys() # This line is used to show the keys    
                 elif user_choice == "4":
-                    self.generate_new_keys() # This line is used to generate a new set of keys
+                    keys = self.generate_new_keys() # This line is used to generate a new set of keys
+                    self.rsa_instance.newFile(keys[0], "public_key") # This line is used to save the public key to a file
+                    self.rsa_instance.newFile(keys[1], "private_key")
                 elif user_choice == "5":
                     break
                 else:
@@ -109,6 +112,7 @@ class RSAManager:   # This class is used to manage the RSA class
     def generate_new_keys(self): # This function is used to generate a new set of keys
         self.rsa_instance = RSA(1024)
         print("New set of keys generated.")
+        return self.rsa_instance.public_key, self.rsa_instance.private_key
 
 def main(): # This function is used to call the main function
     rsa_manager = RSAManager() # This line is used to create an instance of the RSAManager class
