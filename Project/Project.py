@@ -41,13 +41,13 @@ class RSAManager:   # This class is used to manage the RSA class
             print(f"Error: {e} occurred while encrypting the message. Please try again.")
 
     def authenticate_signature(self): # This function is used to authenticate a digital signature
-        signatures = self.rsa_instance.getFiles("signatures") # This line is used to get the signatures from the file
-        if not signatures: # This condition is used to check if the signatures are available
+        signature_names = self.rsa_instance.getSignatureNames() # This line is used to get the signatures from the file
+        if not signature_names: # This condition is used to check if the signatures are available
             print("No signatures available to authenticate.") # This line is used to print the message
             return # This line is used to return the control to the calling function
 
         print("The following messages are available:") # This line is used to print the message
-        for i, signature in enumerate(signatures, 1): # This line is used to iterate through the signatures
+        for i, signature in enumerate(signature_names, 1): # This line is used to iterate through the signatures
             print(f"{i}. {signature}") # This line is used to print the signature
 
         message_number = int(input("Enter your choice: ")) # This line is used to take the input from the user
@@ -102,7 +102,7 @@ class RSAManager:   # This class is used to manage the RSA class
     def sign_message(self): # This function is used to sign the message
         message = input("Enter a message to sign: ") # This line is used to take the input from the user
         signature = self.rsa_instance.encrypt(message, self.rsa_instance.private_key) # This line is used to sign the message
-        self.rsa_instance.newFile(signature, "signatures") # This line is used to save the signature to a file
+        self.rsa_instance.newSignatureFile(signature, message) # This line is used to save the signature to a file
         print("Message signed and sent")
 
     def show_keys(self): # This function is used to show the keys

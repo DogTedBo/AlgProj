@@ -111,6 +111,24 @@ class RSA:
         except UnicodeDecodeError:
             return decrypted_data.hex()
 
+    def newSignatureFile(self, text, name):
+        if not os.path.exists("signatures"):
+            os.makedirs("signatures")
+        filename = name + ".txt"
+        filepath = os.path.join("signatures", filename)
+        
+        if os.path.exists(filepath):
+            print(f"File {filename} already exists. Please try again.")
+        else:
+            with open(filepath, "w") as file:
+                file.write(str(text))
+
+    def getSignatureNames(self):
+        dir = "signatures"
+        if not os.path.exists(dir):
+            print("No signatures available to authenticate.")
+            return []
+        return [os.path.splitext(filename)[0] for filename in os.listdir(dir)]
 
     def newFile(self, text, type="messages"):
         if not os.path.exists(type):
@@ -124,7 +142,7 @@ class RSA:
             with open(filepath, "w") as file:
                 file.write(str(text))
 
-    def getFiles(self, type="messages"):
+    def getFiles(self, type="messages", use_decryption=True):
         try: # This line is used to handle exceptions
             dir = type
             if not os.path.exists(dir):
@@ -143,8 +161,11 @@ class RSA:
                         encrypted_message = ast.literal_eval(content)
 
                         if isinstance(encrypted_message, list) and all(isinstance(n, int) for n in encrypted_message):
-                            decrypted_message = self.decrypt(encrypted_message)
-                            messages.append(decrypted_message)
+                            if (use_decryption):
+                                decrypted_message = self.decrypt(encrypted_message)
+                                messages.append(decrypted_message)
+                            else:
+                                messages.append(encrypted_message)
                         else:
                             print(f"File {filename} contains invalid encrypted message format.")
                 except (SyntaxError, ValueError) as e:
