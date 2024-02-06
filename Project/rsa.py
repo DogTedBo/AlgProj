@@ -3,16 +3,14 @@ import os
 import random
 
 
-class RSA:
-    def __init__(self, key_length=1024):
-        # Check for existing keys and load them if they exist
+class RSA: # This class is used to implement the RSA algorithm
+    def __init__(self, key_length=1024): # This function is used to initialize the class     
         if not self.load_keys():
             self.public_key, self.private_key = self.rsa_keygen(key_length)
             self.public_sign_key, self.private_sign_key = self.rsa_keygen(key_length)
-            # Save the newly generated keys
             self.save_keys()
 
-    def load_keys(self):
+    def load_keys(self): # This function is used to load the keys
         keys_path = "keys"
         try:
             if os.path.exists(os.path.join(keys_path, "public_key.pem")) and os.path.exists(os.path.join(keys_path, "private_key.pem")) and os.path.exists(os.path.join(keys_path, "public_sign_key.pem")) and os.path.exists(os.path.join(keys_path, "private_sign_key.pem")):
@@ -29,7 +27,7 @@ class RSA:
             print(f"Error loading keys: {e}")
         return False
 
-    def save_keys(self):
+    def save_keys(self): # This function is used to save the keys
         keys_path = "keys"
         if not os.path.exists(keys_path):
             os.makedirs(keys_path)
@@ -42,10 +40,10 @@ class RSA:
         with open(os.path.join(keys_path, "private_sign_key.pem"), "w") as file:
             file.write(str(self.private_sign_key))
 
-    def generate_prime_candidate(self, length):
+    def generate_prime_candidate(self, length): # This function is used to generate a prime candidate
         return random.getrandbits(length)
 
-    def is_prime(self, n, k=128):
+    def is_prime(self, n, k=128): # This function is used to check if a number is prime
         if n <= 1 or n == 4:
             return False
         if n <= 3:
@@ -57,19 +55,19 @@ class RSA:
                 return False
         return True
 
-    def generate_prime_number(self, length=1024):
+    def generate_prime_number(self, length=1024): # This function is used to generate a prime number
         p = 4
         while not self.is_prime(p, 128):
             p = self.generate_prime_candidate(length)
         return p
 
-    def gcd(self, a, b):
+    def gcd(self, a, b): # This function is used to calculate the greatest common divisor
         if b == 0:
             return a
         else:
             return self.gcd(b, a % b)
 
-    def multiplicative_inverse(self, e, phi):
+    def multiplicative_inverse(self, e, phi): # This function is used to calculate the multiplicative inverse
         m0, x0, x1 = phi, 0, 1
         while e > 1:
             q = e // phi
@@ -80,7 +78,7 @@ class RSA:
             x1 = t
         return x1 + m0 if x1 < 0 else x1
 
-    def rsa_keygen(self, key_length):
+    def rsa_keygen(self, key_length): # This function is used to generate the RSA keys
         p = self.generate_prime_number(key_length // 2)
         q = self.generate_prime_number(key_length // 2)
         n = p * q
@@ -91,14 +89,14 @@ class RSA:
 
         return ((e, n), (d, n))
 
-    def encrypt(self, plaintext, key=None):
+    def encrypt(self, plaintext, key=None): # This function is used to encrypt the plaintext
         if key is None:
             key = self.public_key
         key, n = key
         cipher = [pow(ord(char), key, n) for char in plaintext]
         return cipher
 
-    def decrypt(self, ciphertext, key=None):
+    def decrypt(self, ciphertext, key=None): # This function is used to decrypt the ciphertext
         if key is None:
             key = self.private_key
         key, n = key
@@ -111,7 +109,7 @@ class RSA:
         except UnicodeDecodeError:
             return decrypted_data.hex()
 
-    def newSignatureFile(self, text, name):
+    def newSignatureFile(self, text, name): # This function is used to save the signature to a file
         if not os.path.exists("signatures"):
             os.makedirs("signatures")
         filename = name + ".txt"
@@ -123,14 +121,14 @@ class RSA:
             with open(filepath, "w") as file:
                 file.write(str(text))
 
-    def getSignatureNames(self):
+    def getSignatureNames(self): # This function is used to get the signature names
         dir = "signatures"
         if not os.path.exists(dir):
             print("No signatures available to authenticate.")
             return []
         return [os.path.splitext(filename)[0] for filename in os.listdir(dir)]
 
-    def newFile(self, text, type="messages"):
+    def newFile(self, text, type="messages"): # This function is used to save the message to a file
         if not os.path.exists(type):
             os.makedirs(type)
         filename = ''.join(random.choices('0123456789ABCDEF', k=16)) + ".txt"
@@ -142,8 +140,8 @@ class RSA:
             with open(filepath, "w") as file:
                 file.write(str(text))
 
-    def getFiles(self, type="messages", use_decryption=True):
-        try: # This line is used to handle exceptions
+    def getFiles(self, type="messages", use_decryption=True): # This function is used to get the files
+        try:
             dir = type
             if not os.path.exists(dir):
                 print(f"No {type} directory found.")
@@ -177,20 +175,18 @@ class RSA:
             print(f"An unexpected error occurred while retrieving files: {e}")
             return []
     
-    def sign(self, message, key=None):
+    def sign(self, message, key=None): # This function is used to sign the message
         if key is None:
-            key = self.private_sign_key  # Use the private signing key
+            key = self.private_sign_key
         key, n = key
         signature = [pow(ord(char), key, n) for char in message]
         return signature
 
 
-    def verify_signature(self, message, signature, key=None):
+    def verify_signature(self, message, signature, key=None): # This function is used to verify the signature
         if key is None:
-            key = self.public_sign_key  # Use the public signing key for verification
+            key = self.public_sign_key
         key, n = key
         decrypted_signature = [pow(char, key, n) for char in signature]
         original_message = ''.join(chr(dec_char) for dec_char in decrypted_signature)
         return original_message == message
-    
-   
